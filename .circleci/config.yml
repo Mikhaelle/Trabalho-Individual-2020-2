@@ -1,4 +1,6 @@
-version: 2
+orbs: # declare what orbs we are going to use
+  node: circleci/node@2.0.2 # the node orb provides common node-related configuration
+version: 2.1
 jobs:
   build:
     docker:
@@ -13,7 +15,7 @@ jobs:
     steps:  
       - checkout
       - run: sudo apt-get update
-      - run: sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib 
+      - run: sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib
       - run:
           command: |
             pip3 install virtualenv
@@ -24,10 +26,28 @@ jobs:
           name: Setup the database
           command: psql -h localhost -p 5432 -U myuser -d circle_test -a -f schema.sql
       - run:
-          name: Running tests
+          name: Running api tests
           command: |
             . env/bin/activate
             cd api/
             python3 manage.py test
       - store_artifacts:
           path: test-reports/
+      - node/install:
+          install-npm: true
+          node-version: 12.16.2
+      - run:
+          name: Install app dependencies
+          command: |
+            cd client/
+            npm install && npm install --only=dev
+      - run:
+          name: Instal quasar
+          command: |
+            cd client/
+            npm install @quasar/cli
+      - run:
+          name: Running app tests
+          command: |
+            cd client/
+            npx quasar test --unit jest
