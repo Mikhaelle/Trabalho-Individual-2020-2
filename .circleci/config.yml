@@ -12,7 +12,6 @@ jobs:
           POSTGRES_DB: circle_test
           POSTGRES_USER: myuser
           POSTGRES_PASSWORD: password
-      - image: "cimg/base:2020.05"
     steps:  
       - checkout
       - run: sudo apt-get update
@@ -40,15 +39,15 @@ jobs:
       - node/install-yarn:
           version: 1.22.4
       - run:
-          name: Instal quasar
-          command: |
-            cd client/
-            yarn global add @quasar/cli
-      - run:
           name: Instal app dependencys
           command: |
             cd client/
             yarn install
+      - run:
+          name: Instal quasar
+          command: |
+            cd client/
+            yarn global add @quasar/cli
       - run:
           name: Running app tests
           command: |
