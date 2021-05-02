@@ -37,7 +37,7 @@ jobs:
           install-npm: true
           node-version: 12.16.2
       - run:
-          name: Instal app dependencys
+          name: Install app dependencies
           command: |
             cd client/
             npm install && npm install --only=dev
