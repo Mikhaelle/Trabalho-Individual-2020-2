@@ -42,12 +42,12 @@ jobs:
           name: Instal app dependencys
           command: |
             cd client/
-            yarn install
+            npm install && npm install --only=dev
       - run:
           name: Instal quasar
           command: |
             cd client/
-            yarn global add @quasar/cli
+            npm install @quasar/cli
       - run:
           name: Running app tests
           command: |
