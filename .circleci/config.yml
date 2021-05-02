@@ -19,10 +19,6 @@ jobs:
       - run: sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib
       - run:
           command: |
-            curl -o- -L https://yarnpkg.com/install.sh | bash
-            echo 'export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"' >> $BASH_ENV
-      - run:
-          command: |
             pip3 install virtualenv
             virtualenv env
             . env/bin/activate
