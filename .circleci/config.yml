@@ -33,6 +33,9 @@ jobs:
             python3 manage.py test
       - store_artifacts:
           path: test-reports/
+      - node/install:
+          install-npm: true
+          node-version: 12.16.2
       - run:
           name: Instal app dependencys
           command: |
