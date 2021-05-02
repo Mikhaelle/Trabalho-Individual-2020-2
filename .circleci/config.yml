@@ -50,4 +50,4 @@ jobs:
           name: Running app tests
           command: |
             cd client/
-            quasar test --unit jest
+            npx quasar test --unit jest
