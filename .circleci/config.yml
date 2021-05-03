@@ -35,11 +35,11 @@ jobs:
           name: Install python dependencies
           command: |
             sudo apt-get update
-            sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib coverage
+            sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib 
             pip3 install virtualenv
             virtualenv env
             . env/bin/activate
-            pip install djangorestframework psycopg2 django-cors-headers
+            pip install djangorestframework psycopg2 django-cors-headers coverage
       - run:
           name: Setup the database
           command: psql -h localhost -p 5432 -U myuser -d circle_test -a -f schema.sql
