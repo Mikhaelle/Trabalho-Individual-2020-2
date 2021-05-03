@@ -59,7 +59,7 @@ jobs:
           name: Install app dependencies
           command: |
             cd client/
-            
+            npm install
       - run:
           name: frontend-tests
           command: |
