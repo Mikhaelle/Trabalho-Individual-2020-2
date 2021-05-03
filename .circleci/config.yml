@@ -54,4 +54,5 @@ jobs:
       - run:
           name: Running app tests
           command: |
+            cd client/
             npm run test:unit:coverage
