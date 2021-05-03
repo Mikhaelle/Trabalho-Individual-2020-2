@@ -58,3 +58,5 @@ jobs:
           command:
             cd client
             ./cc-test-reporter after-build -t lcov
+      - store_artifacts: # upload test coverage as artifact
+                path: ./coverage/lcov.info
