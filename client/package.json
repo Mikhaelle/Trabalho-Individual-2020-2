@@ -10,7 +10,7 @@
     "test": "echo \"See package.json => scripts for available tests.\" && exit 0",
     "test:unit": "jest --updateSnapshot",
     "test:unit:ci": "jest --ci",
-    "test:unit:coverage": "jest --coverage",
+    "test:unit:coverage": "nyc --reporter=lcov --reporter=text jest --coverage",
     "test:unit:watch": "jest --watch",
     "test:unit:watchAll": "jest --watchAll",
     "serve:test:coverage": "quasar serve test/jest/coverage/lcov-report/ --port 8788",
@@ -21,6 +21,8 @@
     "axios": "^0.21.1",
     "chai": "^4.3.4",
     "core-js": "^3.6.5",
+    "mocha": "^8.3.2",
+    "nyc": "^15.1.0",
     "quasar": "^1.0.0"
   },
   "devDependencies": {

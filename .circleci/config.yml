@@ -62,4 +62,3 @@ jobs:
             cd client/
             ./cc-test-reporter after-build -t lcov
 
-
