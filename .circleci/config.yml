@@ -13,6 +13,20 @@ jobs:
           POSTGRES_USER: myuser
           POSTGRES_PASSWORD: password
     steps:  
+      - run:
+          name:  Download cc-test-reporter
+          command: |
+            mkdir -p tmp/
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
+            chmod +x ./tmp/cc-test-reporter
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            - cc-test-reporter
+  
+
+  backend:
+    steps:
       - checkout
       - run:
           name: Install python dependencies
@@ -27,11 +41,15 @@ jobs:
           name: Setup the database
           command: psql -h localhost -p 5432 -U myuser -d circle_test -a -f schema.sql
       - run:
-          name: Running api tests
+          name: backend-tests
           command: |
             . env/bin/activate
             cd api/
             python3 manage.py test
+      
+  frontend:
+   steps:
+      - checkout
       - node/install:
           install-npm: true
           node-version: 12.16.2
@@ -41,7 +59,7 @@ jobs:
             cd client/
             npm install
       - run:
-          name: Running app tests
+          name: frontend-tests
           command: |
             cd client/
             npm run test:unit:coverage
@@ -50,16 +68,35 @@ jobs:
       - store_artifacts: # upload test coverage as artifact
           path: client/test/jest/coverage/lcov.info
           prefix: tests
+
+  upload-coverage:
+    steps:
       - run:
           name: Setup Code Climate test-reporter
           command: |
-            cd client/
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
             ./cc-test-reporter before-build
       - run:
           name: Send coverage report to Code Climate
           command:
-            cd client/
             ./cc-test-reporter after-build -t lcov
+      
+      
+      
+workflows:
+  version: 2
 
+  commit:
+    jobs:
+      - build
+      - backend:
+          requires:
+            - build
+      - frontend: 
+          requires: 
+             - build
+      - upload-coverage:
+          requires:
+             - backend-tests
+             - frontend-tests
