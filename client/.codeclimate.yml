@@ -6,3 +6,4 @@ plugins:
     config:
       extensions:
       - .js 
+
