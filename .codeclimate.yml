@@ -7,4 +7,5 @@ plugins:
       extensions:
       - .js 
       - .py
+      - .vue
 
