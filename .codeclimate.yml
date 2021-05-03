@@ -6,4 +6,5 @@ plugins:
     config:
       extensions:
       - .js 
+      - .py
 

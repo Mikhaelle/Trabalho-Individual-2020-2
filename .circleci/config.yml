@@ -44,6 +44,11 @@ jobs:
           command: |
             cd client/
             npm run test:unit:coverage
+      - store_test_results:
+          path: client/test/jest/coverage/
+      - store_artifacts: # upload test coverage as artifact
+          path: client/test/jest/coverage/lcov.info
+          prefix: tests
       - run:
           name: Setup Code Climate test-reporter
           command: |
@@ -56,7 +61,4 @@ jobs:
           command:
             cd client/
             ./cc-test-reporter after-build -t lcov
-      - store_artifacts: # upload test coverage as artifact
-          path: .client/coverage/lcov.info
-          prefix: tests
 
