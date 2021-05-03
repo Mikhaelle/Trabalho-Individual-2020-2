@@ -59,12 +59,13 @@ jobs:
           name: Install app dependencies
           command: |
             cd client/
-            npm install
+            
       - run:
           name: frontend-tests
           command: |
             cd client/
             npm run test:unit:coverage
+            /tmp/cc-test-reporter format-coverage -t lcov -o tmp/codeclimate.frontend.json test/jest/coverage/lcov.info
       - store_test_results:
           path: client/test/jest/coverage/
       - store_artifacts: # upload test coverage as artifact
@@ -73,15 +74,11 @@ jobs:
     <<: *defaults
     steps:
       - run:
-          name: Setup Code Climate test-reporter
-          command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-            ./cc-test-reporter before-build
-      - run:
-          name: Send coverage report to Code Climate
-          command:
-            ./cc-test-reporter after-build -t lcov
+        name: Upload coverage results to Code Climate
+        command: |
+          ./cc-test-reporter sum-coverage codeclimate.*.json -p 2 -o codeclimate.total.json
+          ./cc-test-reporter upload-coverage -i codeclimate.total.json
+
 workflows:
   version: 2
 
