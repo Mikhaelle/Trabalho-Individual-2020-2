@@ -70,7 +70,7 @@ jobs:
       - run:
           name: add coverage
           command: |
-            ./tmp/cc-test-reporter after-build -t lcov -o tmp/codeclimate.frontend.json client/test/jest/coverage/lcov.info
+            ./tmp/cc-test-reporter format-coverage -t lcov -o tmp/codeclimate.frontend.json client/test/jest/coverage/lcov.info
       - store_test_results:
           path: client/test/jest/coverage/
       - store_artifacts: # upload test coverage as artifact
