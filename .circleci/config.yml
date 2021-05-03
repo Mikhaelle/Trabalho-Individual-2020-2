@@ -19,8 +19,13 @@ jobs:
       - run:
           name:  Download cc-test-reporter
           command: |
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
+            mkdir -p tmp/
+            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
+            chmod +x ./tmp/cc-test-reporter
+      - persist_to_workspace:
+          root: tmp
+          paths:
+            - cc-test-reporter
   backend:
     <<: *defaults
     steps:
@@ -47,6 +52,8 @@ jobs:
     <<: *defaults
     steps:
       - checkout
+      - attach_workspace:
+          at: ~/repo/tmp
       - node/install:
           install-npm: true
           node-version: 12.16.2
@@ -63,7 +70,7 @@ jobs:
       - run:
           name: add coverage
           command: |
-            ./cc-test-reporter format-coverage -t lcov -o /codeclimate.frontend.json test/jest/coverage/lcov.info
+            ./tmp/cc-test-reporter format-coverage -t lcov -o /codeclimate.frontend.json test/jest/coverage/lcov.info
       - store_test_results:
           path: client/test/jest/coverage/
       - store_artifacts: # upload test coverage as artifact
@@ -71,11 +78,13 @@ jobs:
   upload-coverage:
     <<: *defaults
     steps:
+      - attach_workspace:
+          at: ~/repo/tmp
       - run:
           name: Upload coverage results to Code Climate
           command: |
-            ./cc-test-reporter sum-coverage codeclimate.*.json -p 2 -o codeclimate.total.json
-            ./cc-test-reporter upload-coverage -i codeclimate.total.json
+            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json -p 2 -o tmp/codeclimate.total.json
+            ./tmp/cc-test-reporter upload-coverage -i tmp/codeclimate.total.json
 
 workflows:
   version: 2
