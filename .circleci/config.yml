@@ -31,8 +31,6 @@ jobs:
             . env/bin/activate
             cd api/
             python3 manage.py test
-      - store_artifacts:
-          path: test-reports/
       - node/install:
           install-npm: true
           node-version: 12.16.2
@@ -49,14 +47,16 @@ jobs:
       - run:
           name: Setup Code Climate test-reporter
           command: |
-            cd client
+            cd client/
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
             ./cc-test-reporter before-build
       - run:
           name: Send coverage report to Code Climate
           command:
-            cd client
+            cd client/
             ./cc-test-reporter after-build -t lcov
       - store_artifacts: # upload test coverage as artifact
-                path: ./coverage/lcov.info
+          path: .client/coverage/lcov.info
+          prefix: tests
+
