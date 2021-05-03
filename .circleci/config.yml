@@ -35,7 +35,7 @@ jobs:
           name: Install python dependencies
           command: |
             sudo apt-get update
-            sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib
+            sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib coverage
             pip3 install virtualenv
             virtualenv env
             . env/bin/activate
@@ -48,7 +48,7 @@ jobs:
           command: |
             . env/bin/activate
             cd api/
-            python3 manage.py test
+            coverage run -m python3 manage.py test
   frontend:
     <<: *defaults
     steps:
