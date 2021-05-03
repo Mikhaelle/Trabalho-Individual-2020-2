@@ -43,7 +43,7 @@ jobs:
           name: Setup the database
           command: psql -h localhost -p 5432 -U myuser -d circle_test -a -f schema.sql
       - run:
-          name: Backend tests
+          name: backend-tests
           command: |
             . env/bin/activate
             cd api/
@@ -88,10 +88,10 @@ workflows:
   commit:
     jobs:
       - build
-      - backend-tests:
+      - backend:
           requires:
             - build
-      - frontend-tests: 
+      - frontend: 
           requires: 
              - build
       - upload-coverage:
