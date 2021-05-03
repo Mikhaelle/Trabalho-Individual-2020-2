@@ -70,6 +70,7 @@ jobs:
       - run:
           name: add coverage
           command: |
+            cd client/test/jest
             ./tmp/cc-test-reporter after-build -t lcov
       - store_test_results:
           path: client/test/jest/coverage/
