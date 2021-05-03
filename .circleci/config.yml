@@ -1,65 +1,75 @@
 orbs: # declare what orbs we are going to use
   node: circleci/node@2.0.2 # the node orb provides common node-related configuration
 version: 2.1
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: circleci/python:3.6.4
+      environment:
+        DATABASE_URL: postgresql://myuser@localhost:5432/circle_test
+    - image: circleci/postgres:12
+      environment:
+        POSTGRES_DB: circle_test
+        POSTGRES_USER: myuser
+        POSTGRES_PASSWORD: password
 jobs:
-  build:
-    docker:
-      - image: circleci/python:3.6.4
-        environment:
-          DATABASE_URL: postgresql://myuser@localhost:5432/circle_test
-      - image: circleci/postgres:12
-        environment:
-          POSTGRES_DB: circle_test
-          POSTGRES_USER: myuser
-          POSTGRES_PASSWORD: password
-    steps:  
+  build-backend:
+    <<: *defaults
+    steps:
       - checkout
       - run:
           name: Install python dependencies
           command: |
             sudo apt-get update
-            sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib
+            sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib 
             pip3 install virtualenv
             virtualenv env
             . env/bin/activate
-            pip install djangorestframework psycopg2 django-cors-headers
+            pip install djangorestframework psycopg2 django-cors-headers coverage
       - run:
           name: Setup the database
           command: psql -h localhost -p 5432 -U myuser -d circle_test -a -f schema.sql
       - run:
-          name: Running api tests
+          name: backend-tests
           command: |
             . env/bin/activate
             cd api/
-            python3 manage.py test
+            coverage run --source='.' manage.py test
+      - run:
+          name: test coverage
+          command: |
+            . env/bin/activate
+            cd api/
+            coverage report
+  build-frontend:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/repo/tmp
       - node/install:
-          install-npm: true
           node-version: 12.16.2
       - run:
           name: Install app dependencies
           command: |
             cd client/
-            npm install
+            npm install && npm install --only=dev
+            npm install @quasar/cli
+            npx quasar build
       - run:
-          name: Running app tests
+          name: frontend-tests
           command: |
             cd client/
-            npx quasar test --unit jest --coverage
+            npx quasar test --unit jest
       - store_test_results:
           path: client/test/jest/coverage/
       - store_artifacts: # upload test coverage as artifact
           path: client/test/jest/coverage/lcov.info
-          prefix: tests
-      - run:
-          name: Setup Code Climate test-reporter
-          command: |
-            cd client/
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
-            chmod +x ./cc-test-reporter
-            ./cc-test-reporter before-build
-      - run:
-          name: Send coverage report to Code Climate
-          command:
-            cd client/
-            ./cc-test-reporter after-build -t lcov
 
+workflows:
+  version: 2
+
+  commit:
+    jobs:
+      - build-backend
+      - build-frontend
