@@ -27,6 +27,7 @@ jobs:
           paths:
             - cc-test-reporter
   backend:
+    <<: *defaults
     steps:
       - checkout
       - run:
@@ -42,13 +43,14 @@ jobs:
           name: Setup the database
           command: psql -h localhost -p 5432 -U myuser -d circle_test -a -f schema.sql
       - run:
-          name: backend-tests
+          name: Backend tests
           command: |
             . env/bin/activate
             cd api/
             python3 manage.py test
   frontend:
-   steps:
+    <<: *defaults
+    steps:
       - checkout
       - node/install:
           install-npm: true
@@ -67,8 +69,8 @@ jobs:
           path: client/test/jest/coverage/
       - store_artifacts: # upload test coverage as artifact
           path: client/test/jest/coverage/lcov.info
-          prefix: tests
   upload-coverage:
+    <<: *defaults
     steps:
       - run:
           name: Setup Code Climate test-reporter
@@ -94,5 +96,5 @@ workflows:
              - build
       - upload-coverage:
           requires:
-             - backend-tests
-             - frontend-tests
+             - backend
+             - frontend
