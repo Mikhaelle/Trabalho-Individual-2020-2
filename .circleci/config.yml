@@ -13,22 +13,7 @@ defaults: &defaults
         POSTGRES_USER: myuser
         POSTGRES_PASSWORD: password
 jobs:
-  build:
-    <<: *defaults
-    steps:
-      - run:
-          name:  Download cc-test-reporter
-          command: |
-            mkdir -p tmp/
-            curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./tmp/cc-test-reporter
-            chmod +x ./tmp/cc-test-reporter
-            ./tmp/cc-test-reporter before-build
-      - persist_to_workspace:
-          root: tmp
-          paths:
-            - cc-test-reporter
-  backend:
-    <<: *defaults
+  build-backend:
     steps:
       - checkout
       - run:
@@ -55,8 +40,7 @@ jobs:
             . env/bin/activate
             cd api/
             coverage report
-  frontend:
-    <<: *defaults
+  build-frontend:
     steps:
       - checkout
       - attach_workspace:
@@ -67,12 +51,12 @@ jobs:
           name: Install app dependencies
           command: |
             cd client/
-            npm install
+            npm install && npm install --only=dev
       - run:
           name: frontend-tests
           command: |
             cd client/
-            npm run test:unit:coverage
+            quasar test --unit jest
       - store_test_results:
           path: client/test/jest/coverage/
       - store_artifacts: # upload test coverage as artifact
@@ -83,10 +67,5 @@ workflows:
 
   commit:
     jobs:
-      - build
-      - backend:
-          requires:
-            - build
-      - frontend: 
-          requires: 
-             - build
+      - build-backend
+      - build-frontend
