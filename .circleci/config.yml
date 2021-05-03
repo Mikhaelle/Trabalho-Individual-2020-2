@@ -48,7 +48,13 @@ jobs:
           command: |
             . env/bin/activate
             cd api/
-            coverage run -m python3 manage.py test
+            coverage run --source='.' manage.py test
+      - run:
+          name: test coverage
+          command: |
+            . env/bin/activate
+            cd api/
+            coverage report
   frontend:
     <<: *defaults
     steps:
