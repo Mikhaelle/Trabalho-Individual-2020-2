@@ -65,6 +65,9 @@ jobs:
           command: |
             cd client/
             npm run test:unit:coverage
+      - run:
+          name: add coverage
+          command: |
             /tmp/cc-test-reporter format-coverage -t lcov -o tmp/codeclimate.frontend.json test/jest/coverage/lcov.info
       - store_test_results:
           path: client/test/jest/coverage/
