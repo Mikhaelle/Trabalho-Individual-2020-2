@@ -74,10 +74,10 @@ jobs:
     <<: *defaults
     steps:
       - run:
-        name: Upload coverage results to Code Climate
-        command: |
-          ./cc-test-reporter sum-coverage codeclimate.*.json -p 2 -o codeclimate.total.json
-          ./cc-test-reporter upload-coverage -i codeclimate.total.json
+          name: Upload coverage results to Code Climate
+          command: |
+            ./cc-test-reporter sum-coverage codeclimate.*.json -p 2 -o codeclimate.total.json
+            ./cc-test-reporter upload-coverage -i codeclimate.total.json
 
 workflows:
   version: 2
