@@ -77,16 +77,6 @@ jobs:
           path: client/test/jest/coverage/
       - store_artifacts: # upload test coverage as artifact
           path: client/test/jest/coverage/lcov.info
-  upload-coverage:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: ~/repo/tmp
-      - run:
-          name: Upload coverage results to Code Climate
-          command: |
-            ./tmp/cc-test-reporter sum-coverage tmp/codeclimate.*.json -p 2 -o tmp/codeclimate.total.json
-            ./tmp/cc-test-reporter upload-coverage -i tmp/codeclimate.total.json
 
 workflows:
   version: 2
@@ -100,7 +90,3 @@ workflows:
       - frontend: 
           requires: 
              - build
-      - upload-coverage:
-          requires:
-             - backend
-             - frontend
