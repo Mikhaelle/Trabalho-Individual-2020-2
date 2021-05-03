@@ -44,7 +44,7 @@ jobs:
           command: |
             cd client/
             npm run test:unit:coverage
-            - store_test_results:
+      - store_test_results:
           path: client/coverage/lcov-report
       - store_artifacts: # upload test coverage as artifact
           path: client/coverage/lcov.info
