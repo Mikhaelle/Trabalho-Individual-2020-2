@@ -12,7 +12,6 @@ jobs:
           POSTGRES_DB: circle_test
           POSTGRES_USER: myuser
           POSTGRES_PASSWORD: password
-      - image: circleci/node:12.16.2
     steps:  
       - checkout
       - run: sudo apt-get update
@@ -34,6 +33,9 @@ jobs:
             python3 manage.py test
       - store_artifacts:
           path: test-reports/
+      - node/install:
+          install-npm: true
+          node-version: 12.16.2
       - run:
           name: Install app dependencies
           command: |
