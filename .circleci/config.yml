@@ -14,10 +14,11 @@ jobs:
           POSTGRES_PASSWORD: password
     steps:  
       - checkout
-      - run: sudo apt-get update
-      - run: sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib
       - run:
+          name: Install python dependencies
           command: |
+            sudo apt-get update
+            sudo apt-get install python-pip python-dev libpq-dev postgresql postgresql-contrib
             pip3 install virtualenv
             virtualenv env
             . env/bin/activate
