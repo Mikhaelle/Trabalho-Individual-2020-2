@@ -40,17 +40,7 @@ jobs:
           name: Install app dependencies
           command: |
             cd client/
-            npm install && npm install --only=dev
-      - run:
-          name: Instal quasar
-          command: |
-            cd client/
-            npm install @quasar/cli
-      - run:
-          name: Running app tests
-          command: |
-            cd client/
-            npx quasar test --unit jest
+            npm install
       - run:
           name: Running app tests
           command: |
@@ -59,10 +49,12 @@ jobs:
       - run:
           name: Setup Code Climate test-reporter
           command: |
+            cd client
             curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
             chmod +x ./cc-test-reporter
             ./cc-test-reporter before-build
       - run:
           name: Send coverage report to Code Climate
           command:
+            cd client
             ./cc-test-reporter after-build -t lcov
