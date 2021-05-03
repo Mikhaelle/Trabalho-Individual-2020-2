@@ -45,7 +45,7 @@ jobs:
             cd client/
             npm run test:unit:coverage
       - store_test_results:
-          path: client/test/jest/coverage/lcov-report
+          path: client/test/jest/coverage/
       - store_artifacts: # upload test coverage as artifact
           path: client/test/jest/coverage/lcov.info
           prefix: tests
