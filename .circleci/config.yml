@@ -6,7 +6,7 @@ defaults: &defaults
   docker:
     - image: circleci/python:3.6.4
       environment:
-      DATABASE_URL: postgresql://myuser@localhost:5432/circle_test
+        DATABASE_URL: postgresql://myuser@localhost:5432/circle_test
     - image: circleci/postgres:12
       environment:
         POSTGRES_DB: circle_test
@@ -86,10 +86,10 @@ workflows:
   commit:
     jobs:
       - build
-      - backend:
+      - backend-tests:
           requires:
             - build
-      - frontend: 
+      - frontend-tests: 
           requires: 
              - build
       - upload-coverage:
