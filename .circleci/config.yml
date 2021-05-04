@@ -14,7 +14,7 @@ jobs:
       - run: docker-compose run app yarn test:unit:coverage
       - run: docker-compose run api coverage run --source='.' manage.py test
       - run: docker-compose run api coverage report
-  
+
 workflows:
   version: 2
 
