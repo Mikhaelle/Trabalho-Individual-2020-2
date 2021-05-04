@@ -11,7 +11,7 @@ jobs:
     working_directory: ~/repo # Default working directory, where your project will be cloned
     steps:
       - checkout
-      - run: docker-compose run app yarn quasar test --unit jest
+      - run: docker-compose run app yarn test:unit:coverage
       - run: docker-compose run api coverage run --source='.' manage.py test
       - run: docker-compose run api coverage report
   
