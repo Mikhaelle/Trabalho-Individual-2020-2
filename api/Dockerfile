@@ -2,7 +2,7 @@
 FROM python:3.9.4
 
 # install dependencies  
-RUN pip install djangorestframework psycopg2 django-cors-headers
+RUN pip install djangorestframework psycopg2 django-cors-headers coverage
 
 # where your code lives  
 WORKDIR /api 
