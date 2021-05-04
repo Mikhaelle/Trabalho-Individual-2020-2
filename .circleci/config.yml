@@ -6,10 +6,17 @@ jobs:
     steps:
       - checkout
       - run: docker-compose up -d
-
+  test:
+    machine: true # Use a Linux VM instead of docker environment
+    working_directory: ~/repo # Default working directory, where your project will be cloned
+    steps:
+      - checkout
+      - run: docker-compose run app yarn quasar test --unit jest
+  
 workflows:
   version: 2
 
   commit:
     jobs:
       - build
+      -
